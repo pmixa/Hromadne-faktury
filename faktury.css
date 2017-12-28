@@ -1,0 +1,10 @@
+.block {display:block}
+
+tr {border-bottom:1px solid #AAA}
+.line {padding-left:2px;border-left:1px solid #AAA;}
+.red {color:#C00}
+
+@media screen and (max-device-width: 568px) {
+     /* place here CSS targeted at iPhones and smaller screen sizes, not iPads */
+
+}

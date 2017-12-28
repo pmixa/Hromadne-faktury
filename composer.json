@@ -1,0 +1,14 @@
+{
+    "name": "pmixa/faktury",
+    "description": "WP plugin hromadne rozesilani faktur",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Premysl Mixa",
+            "email": "mixa.p@seznam.cz"
+        }
+    ],
+    "require": {
+        "spipu/html2pdf": "^5.0"
+    }
+}
