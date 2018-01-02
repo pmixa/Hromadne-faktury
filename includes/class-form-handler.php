@@ -25,7 +25,7 @@ class Batches_Form_Handler {
 
         if (isset($_GET['action']) && $_GET['action'] == 'delete') {
 
-         batch_delete($_GET['id']);
+         Batches::delete_batch($_GET['id']);
 
         }
             return;

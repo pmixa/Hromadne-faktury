@@ -111,7 +111,8 @@ class FakturyList extends \WP_List_Table {
      */
     function get_sortable_columns() {
         $sortable_columns = array(
-            'name' => array( 'name', true ),
+            'id_batch' => array( 'id_batch', true ),
+            'num' => array( 'num', true ),
         );
 
         return $sortable_columns;
@@ -171,7 +172,7 @@ class FakturyList extends \WP_List_Table {
         $sortable              = $this->get_sortable_columns();
         $this->_column_headers = array( $columns, $hidden, $sortable );
 
-        $per_page              = 20;
+        $per_page              = 40;
         $current_page          = $this->get_pagenum();
         $offset                = ( $current_page -1 ) * $per_page;
         $this->page_status     = isset( $_GET['status'] ) ? sanitize_text_field( $_GET['status'] ) : '2';

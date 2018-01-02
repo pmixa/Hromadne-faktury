@@ -85,7 +85,10 @@ class Batches {
 
     global $wpdb;
 
-    $wpdb->delete( $wpdb->prefix . 'faktury', array( 'id_batch' => $id ) );
+    $count = $wpdb->delete( $wpdb->prefix . 'faktury', array( 'id_batch' => $id ) );
+
+    update_option( 'rada', get_option('rada')-$count);
+    
     return (int) $wpdb->delete($wpdb->prefix . 'batches',array( 'id' => $id));
 }
 
