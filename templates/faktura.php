@@ -39,8 +39,8 @@ img {width:330px;}
 		<td>
 			Variabilní symbol: <strong><?= $faktura->vs; ?></strong><br />
 			Konstantní symbol: <?= $faktura->ks; ?><br />
-			Datum vyhotovení: <strong><?= $faktura->date; ?></strong><br />
-			Datum splatnosti: <strong><?= $faktura->date_due; ?></strong><br />
+			Datum vyhotovení: <strong><?= convert_date($faktura->date); ?></strong><br />
+			Datum splatnosti: <strong><?= convert_date($faktura->date_due); ?></strong><br />
 			Forma úhrady: převodem z účtu
 		</td>
 	</tr>
