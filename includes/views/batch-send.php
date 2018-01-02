@@ -9,7 +9,7 @@
 $textemail=get_option('textemail');
 
 
-$faktury = get_faktury ($batch_id);
+$faktury = Faktura::get_faktury ($batch_id);
 
 $pocet = count($faktury);
 $max = 25;

@@ -20,9 +20,8 @@ class Faktury {
     public function admin_menu() {
 
         /** Top Menu **/
-        add_menu_page( __( 'Faktury', 'wedevs' ), __( 'Faktury', 'wedevs' ), 'manage_options', 'faktury-list', array( $this, 'plugin_page' ), 'dashicons-groups', null );
+        add_menu_page( __( 'Faktury', 'faktury' ), __( 'Faktury', 'faktury' ), 'manage_options', 'faktury', array( $this, 'plugin_page' ), 'dashicons-groups', null );
 
-        add_submenu_page( 'batches', __( 'Faktury', 'wedevs' ), __( 'Faktury', 'wedevs' ), 'manage_options', 'faktury-list', array( $this, 'plugin_page' ) );
     }
 
     /**
@@ -56,12 +55,113 @@ class Faktury {
             include $template;
         }
     }
+
+    public static function get_all ( $args = array() ) {
+    global $wpdb;
+
+    $defaults = array(
+        'number'     => 20,
+        'offset'     => 0,
+        'orderby'    => 'id',
+        'order'      => 'ASC',
+    );
+
+    $args      = wp_parse_args( $args, $defaults );
+    $cache_key = 'faktura-all';
+    $items     = wp_cache_get( $cache_key, 'faktury' );
+
+    if ( false === $items ) {
+        $items = $wpdb->get_results( 'SELECT * FROM ' . $wpdb->prefix . 'faktury ORDER BY ' . $args['orderby'] .' ' . $args['order'] .' LIMIT ' . $args['offset'] . ', ' . $args['number'] );
+
+        wp_cache_set( $cache_key, $items, 'faktury' );
+    }
+
+    return $items;
+}
+
+/**
+ * Fetch all faktura from database
+ *
+ * @return array
+ */
+public static function get_count() {
+    global $wpdb;
+
+    return (int) $wpdb->get_var( 'SELECT COUNT(*) FROM ' . $wpdb->prefix . 'faktury' );
+}
+
+public static function get_faktura( $id ) {
+    global $wpdb;
+
+    return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . $wpdb->prefix . 'faktury WHERE id = %d', $id ) );
+}
+
+public static function get_faktury( $id ) {
+    
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'faktury';
+
+    return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $table_name . ' WHERE id_batch = %d', $id ) );
+}
+
+
+/**
+ * Insert a new faktura
+ *
+ * @param array $args
+ */
+public static function insert_faktura( $args = array() ) {
+    global $wpdb;
+
+    $defaults = array(
+        'id'         => null,
+        'title' => '',
+        'num' => '',
+        'date' => '',
+        'date_due' => '',
+        'ks' => '',
+        'vs' => '',
+        'description' => '',
+        'price' => '',
+
+    );
+
+    $args       = wp_parse_args( $args, $defaults );
+    $table_name = $wpdb->prefix . 'faktury';
+
+    // some basic validation
+
+    // remove row id to determine if new or update
+    $row_id = (int) $args['id'];
+    unset( $args['id'] );
+
+    if ( ! $row_id ) {
+
+        
+        // insert a new
+        if ( $wpdb->insert( $table_name, $args ) ) {
+            return $wpdb->insert_id;
+        }
+
+    } else {
+
+        // do update method here
+        if ( $wpdb->update( $table_name, $args, array( 'id' => $row_id ) ) ) {
+            return $row_id;
+        }
+    }
+
+    return false;
+}
+
+
 }
 
 class Faktura {
 
 	public $num = '';
-	private $id = null;
+	public $id = null;
 	public $vs = null;
 	public $ks = null;
 	public $date = null;
@@ -84,8 +184,8 @@ class Faktura {
     $this->description = $fa->description;
     $this->id_batch = $fa->id_batch;
     $this->vs = $fa->vs;
-    $this->date = convert_date($fa->date);
-    $this->date_due = convert_date($fa->date_due);
+    $this->date = $fa->date;
+    $this->date_due = $fa->date_due;
     $this->ks = $fa->ks;
     $this->num = $fa->num;
     $this->user = $fa->id_user;

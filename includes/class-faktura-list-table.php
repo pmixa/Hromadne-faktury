@@ -27,7 +27,7 @@ class FakturyList extends \WP_List_Table {
      * @return void
      */
     function no_items() {
-        _e( 'Nenalezeno', 'wedevs' );
+        _e( 'Nenalezeno', 'faktury' );
     }
 
     /**
@@ -69,12 +69,12 @@ class FakturyList extends \WP_List_Table {
     function get_columns() {
         $columns = array(
             'cb'           => '<input type="checkbox" />',
-            'title'      => __( 'Název', 'wedevs' ),
-            'id_batch'      => __( 'Batch', 'wedevs' ),
-            'id_user'      => __( 'Odběratel', 'wedevs' ),
-            'price'      => __( 'Cena', 'wedevs' ),
-            'vs'      => __( 'Variabilní symbol', 'wedevs' ),
-            'num'      => __( 'Číslo faktury', 'wedevs' ),
+            'title'      => __( 'Název', 'faktury' ),
+            'id_batch'      => __( 'Batch', 'faktury' ),
+            'id_user'      => __( 'Odběratel', 'faktury' ),
+            'price'      => __( 'Cena', 'faktury' ),
+            'vs'      => __( 'Variabilní symbol', 'faktury' ),
+            'num'      => __( 'Číslo faktury', 'faktury' ),
 
         );
 
@@ -97,9 +97,9 @@ class FakturyList extends \WP_List_Table {
     function column_title( $item ) {
 
         $actions           = array();
-        $actions['edit']   = sprintf( '<a href="%s" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=faktury&action=edit&id=' . $item->id ), $item->id, __( 'Edit this item', 'wedevs' ), __( 'Edit', 'wedevs' ) );
+        $actions['edit']   = sprintf( '<a href="%s" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=faktury&action=edit&id=' . $item->id ), $item->id, __( 'Edit this item', 'faktury' ), __( 'Edit', 'faktury' ) );
         
-        $actions['delete'] = sprintf( '<a href="%s" class="submitdelete" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=faktury&action=delete&id=' . $item->id ), $item->id, __( 'Delete this item', 'wedevs' ), __( 'Delete', 'wedevs' ) );
+        $actions['delete'] = sprintf( '<a href="%s" class="submitdelete" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=faktury&action=delete&id=' . $item->id ), $item->id, __( 'Delete this item', 'faktury' ), __( 'Delete', 'faktury' ) );
 
         return sprintf( '<a href="%1$s"><strong>%2$s</strong></a> %3$s', admin_url( 'admin.php?page=faktury&action=view&id=' . $item->id ), $item->title, $this->row_actions( $actions ) );
     }
@@ -124,7 +124,7 @@ class FakturyList extends \WP_List_Table {
      */
     function get_bulk_actions() {
         $actions = array(
-            'trash'  => __( 'Move to Trash', 'wedevs' ),
+            'trash'  => __( 'Move to Trash', 'faktury' ),
         );
         return $actions;
     }
@@ -187,10 +187,10 @@ class FakturyList extends \WP_List_Table {
             $args['order']   = $_REQUEST['order'] ;
         }
 
-        $this->items  = Faktury_get_all_faktura( $args );
+        $this->items  = Faktury::get_all( $args );
 
         $this->set_pagination_args( array(
-            'total_items' => Faktury_get_faktura_count(),
+            'total_items' => Faktury::get_count(),
             'per_page'    => $per_page
         ) );
     }

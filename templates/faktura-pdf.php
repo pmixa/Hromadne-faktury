@@ -15,7 +15,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 	ob_start();
 
-	$faktury = get_faktury ($batch_id);
+	$faktury = Faktury::get_faktury ($batch_id);
 	$i = 1;
 
 	// faktury pro ucetni

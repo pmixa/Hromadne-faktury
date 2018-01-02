@@ -27,7 +27,7 @@ class BatchList extends \WP_List_Table {
      * @return void
      */
     function no_items() {
-        _e( 'Nic nenalezeno', 'wedevs' );
+        _e( 'Nic nenalezeno', 'faktury' );
     }
 
     /**
@@ -56,6 +56,9 @@ class BatchList extends \WP_List_Table {
             case 'price':
                 return $item->price;
 
+            case 'users':
+                return get_users($item->id);
+
             default:
                 return isset( $item->$column_name ) ? $item->$column_name : '';
         }
@@ -69,11 +72,12 @@ class BatchList extends \WP_List_Table {
     function get_columns() {
         $columns = array(
             'cb'           => '<input type="checkbox" />',
-            'title'      => __( 'Název', 'wedevs' ),
-            'date'      => __( 'Datum', 'wedevs' ),
-            'date_due'      => __( 'Datum plnění', 'wedevs' ),
-            'description'      => __( 'Popis', 'wedevs' ),
-            'price'      => __( 'Cena', 'wedevs' ),
+            'title'      => __( 'Název', 'faktury' ),
+            'date'      => __( 'Datum', 'faktury' ),
+            'date_due'      => __( 'Datum plnění', 'faktury' ),
+            'description'      => __( 'Popis', 'faktury' ),
+            'price'      => __( 'Cena', 'faktury' ),
+            'users'      => __( 'Odběratelé', 'faktury' ),
 
         );
 
@@ -90,10 +94,10 @@ class BatchList extends \WP_List_Table {
     function column_title( $item ) {
 
         $actions           = array();
-        $actions['edit']   = sprintf( '<a href="%s" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=batch-list&action=edit&id=' . $item->id ), $item->id, __( 'Edit this item', 'wedevs' ), __( 'Edit', 'wedevs' ) );
-       $actions['send']   = sprintf( '<a href="%s" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=batch-list&action=send&id=' . $item->id ), $item->id, __( 'Send this item', 'wedevs' ), __( 'Send', 'wedevs' ) );
+        $actions['edit']   = sprintf( '<a href="%s" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=batch-list&action=edit&id=' . $item->id ), $item->id, __( 'Edit this item', 'faktury' ), __( 'Edit', 'faktury' ) );
+       $actions['send']   = sprintf( '<a href="%s" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=batch-list&action=send&id=' . $item->id ), $item->id, __( 'Send this item', 'faktury' ), __( 'Send', 'faktury' ) );
         
-        $actions['delete'] = sprintf( '<a href="%s" class="submitdelete" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=batch-list&action=delete&id=' . $item->id ), $item->id, __( 'Delete this item', 'wedevs' ), __( 'Delete', 'wedevs' ) );
+        $actions['delete'] = sprintf( '<a href="%s" class="submitdelete" data-id="%d" title="%s">%s</a>', admin_url( 'admin.php?page=batch-list&action=delete&id=' . $item->id ), $item->id, __( 'Delete this item', 'faktury' ), __( 'Delete', 'faktury' ) );
 
         return sprintf( '<a href="%1$s"><strong>%2$s</strong></a> %3$s', admin_url( 'admin.php?page=batch-list&action=view&id=' . $item->id ), $item->title, $this->row_actions( $actions ) );
     }
@@ -105,7 +109,8 @@ class BatchList extends \WP_List_Table {
      */
     function get_sortable_columns() {
         $sortable_columns = array(
-            'name' => array( 'name', true ),
+            'date' => array( 'date', true ),
+            'price' => array( 'price', true ),
         );
 
         return $sortable_columns;
@@ -118,7 +123,7 @@ class BatchList extends \WP_List_Table {
      */
     function get_bulk_actions() {
         $actions = array(
-            'trash'  => __( 'Move to Trash', 'wedevs' ),
+            'trash'  => __( 'Move to Trash', 'faktury' ),
         );
         return $actions;
     }
@@ -181,11 +186,33 @@ class BatchList extends \WP_List_Table {
             $args['order']   = $_REQUEST['order'] ;
         }
 
-        $this->items  = batch_get_all_batch( $args );
+        $this->items  = Batches::get_all( $args );
 
         $this->set_pagination_args( array(
-            'total_items' => batch_get_batch_count(),
+            'total_items' => Batches::get_count(),
             'per_page'    => $per_page
         ) );
     }
+
+    public function get_users() {
+
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'faktury';
+   
+    $fa =  $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $table_name . ' WHERE id_batch = %d', $this->id ) );
+    
+    $users = '';
+
+    foreach ($fa as $faktura) {
+    
+    $item = new Faktura($faktura->id);
+
+    $user = $item->get_user();  
+    $users.=$user['jmeno'].", ";
+      }    
+
+      return $users;
+    }
+
 }

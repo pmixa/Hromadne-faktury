@@ -116,19 +116,15 @@ include dirname(__FILE__) . '/includes/user_extraprofiles.php';
 
 include dirname(__FILE__) . '/includes/class-batch.php';
 include dirname(__FILE__) . '/includes/class-batch-list-table.php';
-include dirname(__FILE__) . '/includes/class-form-handler.php';
-include dirname(__FILE__) . '/includes/batch-functions.php';
-
 include dirname(__FILE__) . '/includes/class-faktury.php';
 include dirname(__FILE__) . '/includes/class-faktura-list-table.php';
-include dirname(__FILE__) . '/includes/class-faktura-form-handler.php';
-include dirname(__FILE__) . '/includes/faktura-functions.php';
+include dirname(__FILE__) . '/includes/class-form-handler.php';
 
 require_once dirname(__FILE__).'/vendor/autoload.php';
 include dirname(__FILE__) . '/shortcodes.php';
 
 
-new Batch();
+new Batches();
 new Faktury();
 
 add_filter( 'template_include', 'page_template', 99 );
@@ -141,6 +137,12 @@ function page_template( $template ) {
         }
         
     return $template;
+}
+
+function convert_date ($date) {
+
+	$item = DateTime::createFromFormat('Y-m-d', $date);
+                return $item->format('d.m.Y');
 }
 
 });
