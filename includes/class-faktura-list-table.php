@@ -84,7 +84,8 @@ class FakturyList extends \WP_List_Table {
     function get_user_name($id) {
 
     	$user = get_user_by( 'id', $id );
-    	return $user->first_name;
+        $firma = get_the_author_meta( 'firma', $user->ID );
+    	return $firma.", ".$user->first_name;
     }
 
     /**

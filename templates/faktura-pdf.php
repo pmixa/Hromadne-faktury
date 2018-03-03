@@ -4,6 +4,7 @@
 use Spipu\Html2Pdf\Html2Pdf;
 
 	$batch_id = isset($_GET['batch']) ? $_GET['batch'] : false;
+	$faktura_id = isset($_GET['faktura']) ? $_GET['faktura'] : false;
 	$od = isset($_GET['od']) ? $_GET['od'] : false;
 	$do = isset($_GET['do']) ? $_GET['do'] : false;
 	$user = isset($_GET['user']) ? $_GET['user'] : false;
@@ -11,10 +12,11 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 	
 
-	if ($batch_id && ($od || $do || $user)) {
+	if (($batch_id && ($od || $do || $user)) || $faktura_id) {
 
 	ob_start();
 
+	if (!$faktura_id) {
 	$faktury = Faktury::get_faktury ($batch_id);
 	$i = 1;
 
@@ -38,6 +40,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 	
 	}
 
+
 	//faktura pro uzivatele
 	else if ($user) {
 
@@ -53,6 +56,19 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 			}
 	}
+	}
+
+	else {
+
+				$faktura = new Faktura($faktura_id);
+				$customer = $faktura->get_user();
+
+				echo '<page style="font-family: freeserif"><br />';
+				include "faktura.php";
+				echo'</page>';
+
+		}
+
 
 	
   	$content = ob_get_clean();

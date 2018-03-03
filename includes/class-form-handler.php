@@ -138,7 +138,14 @@ class Faktura_Form_Handler {
      */
     public function handle_form() {
         if ( ! isset( $_POST['submit'] ) ) {
-            return;
+            
+
+        if (isset($_GET['action']) && $_GET['action'] == 'delete') {
+
+         Faktury::delete_faktura($_GET['id']);
+         
+        }
+           return;
         }
 
         if ( ! wp_verify_nonce( $_POST['_wpnonce'], '' ) ) {

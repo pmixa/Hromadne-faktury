@@ -57,7 +57,7 @@ class BatchList extends \WP_List_Table {
                 return $item->price;
 
             case 'users':
-                return get_users($item->id);
+                return $this->getusers($item->id);
 
             default:
                 return isset( $item->$column_name ) ? $item->$column_name : '';
@@ -194,13 +194,14 @@ class BatchList extends \WP_List_Table {
         ) );
     }
 
-    public function get_users() {
+    public function getusers($id) {
 
     global $wpdb;
+   
 
     $table_name = $wpdb->prefix . 'faktury';
    
-    $fa =  $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $table_name . ' WHERE id_batch = %d', $this->id ) );
+    $fa =  $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $table_name . ' WHERE id_batch = %d', $id ) );
     
     $users = '';
 
@@ -209,10 +210,11 @@ class BatchList extends \WP_List_Table {
     $item = new Faktura($faktura->id);
 
     $user = $item->get_user();  
-    $users.=$user['jmeno'].", ";
+    $users.="<a title=\"".$user['zus']."\">".$user['jmeno']."</a><br />";
       }    
 
-      return $users;
+ 	return $users;
+      
     }
 
 }

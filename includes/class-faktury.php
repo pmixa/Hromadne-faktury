@@ -105,6 +105,17 @@ public static function get_faktury( $id ) {
     return $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM ' . $table_name . ' WHERE id_batch = %d', $id ) );
 }
 
+ public static function delete_faktura($id) {
+
+    global $wpdb;
+
+    $count = $wpdb->delete( $wpdb->prefix . 'faktury', array( 'id' => $id ) );
+
+    update_option( 'rada', get_option('rada')-$count);
+    
+    return $count;
+}
+
 
 /**
  * Insert a new faktura
